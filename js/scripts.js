@@ -346,7 +346,7 @@ $(function () {
 */
 
 function initMap() {
-	var myLatlng = new google.maps.LatLng(-9.9494298, -76.2504978); // <- Your latitude and longitude
+	var myLatlng = new google.maps.LatLng(-9.922230, -76.238842); // <- Your latitude and longitude
 	var styles = [
 		{
 			"stylers": [
