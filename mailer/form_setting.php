@@ -1,8 +1,8 @@
 <?php
 	/*Form settings*/
-	$subj = "New message from the site 'Patrick - vCard & Resume Template'"; //letter subject
-	$to = 'beshleygame@mail.ru'; // Enter Your E-mail
-	$from = 'admin@you-site-name.com'; // Admin e-mail
-	$fromName = 'Your Company Name'; // Your company name
+	$subj = "Nuevo Mensajes del sitio 'Tunchs'"; //letter subject
+	$to = 'therenatoem@gmailcom'; // Enter Your E-mail
+	$from = 'admin@lostunches.com'; // Admin e-mail
+	$fromName = 'Tunchs'; // Your company name
 	$charset = 'UTF-8';
 ?>
