@@ -1,369 +1,223 @@
-/*
-*   Author: beshleyua
-*   Author URL: http://themeforest.net/user/beshleyua
-*/
 
+	
+(function ($) {
 
-/*
-	Preloader
-*/
+    "use strict";
 
-$(window).on("load", function() {
-	var preload = $('.preloader');
-	var lines = $('.lines-grid');
-	preload.find('.spinner').fadeOut(function(){
-		preload.fadeOut();
-		lines.addClass('loaded');
+	// JQUERY LIGHT BOX
+	
+	if ( $.isFunction($.fn.fluidbox) ) {
+		$('a').fluidbox();
+	}
+	
+	//ROUNDED TIMES COUNTDOWN
+	
+	if(isExists('#rounded-countdown')){
+		var remainingSec = $('.countdown').data('remaining-sec');
+		$('.countdown').ClassyCountdown({
+			theme: "flat-colors-very-wide",
+			end: $.now() + remainingSec
+		});
+	}
+	
+	//NORMAL TIMES COUNTDOWN
+	
+	if(isExists('#normal-countdown')){
+		var date = $('#normal-countdown').data('date');
+		$('#normal-countdown').countdown(date, function(event) {
+			var $this = $(this).html(event.strftime(''
+				+ '<div class="flex-w cd100 p-t-15 p-b-15 p-r-36"><h3 class="l1-txt1 wsize1 days">%D  </h3> <span class="m1-txt1 p-b-2">Dias</span></div>'
+				+ '<div class="flex-w cd100 p-t-15 p-b-15 p-r-36"><h3 class="l1-txt1 wsize1 days">%H  </h3> <span class="m1-txt1 p-b-2">Horas</span></div>'
+				+ '<div class="flex-w cd100 p-t-15 p-b-15 p-r-36"><h3 class="l1-txt1 wsize1 days">%M  </h3> <span class="m1-txt1 p-b-2">Min</span></div>'
+				+ '<div class="flex-w cd100 p-t-15 p-b-15 p-r-36"><h3 class="l1-txt1 wsize1 days">%S  </h3> <span class="m1-txt1 p-b-2">Seg</span></div>'));
+		});
+	}
+	
+	
+	$('a[href="#"]').on('click', function(event){
+		return;
 	});
-});
-
-$(function () {
-	'use strict';
+	
+	// COUNTDOWN TIME 
+	
+	countdownTime();
 	
 	
-	/*
-		Vars
-	*/
-	
-	var width = $(window).width();
-	var height = $(window).height();
-
-
-	/*
-		Typed subtitle
-	*/
-
-	$('.typed-title').typed({
-		stringsElement: $('.typing-title'),
-		backDelay: 5000, /* Delay in text change */
-		typeSpeed: 0, /* Typing speed */
-		loop: true
-	});
-
-
-	/*
-		Menu Mobile
-	*/
-
-	$('.header').on('click', '.menu-btn', function(){
-		if($('.header').hasClass('opened')) {
-			$('.header').removeClass('opened');
-		} else {
-			$('.header').addClass('opened');
-		}
-	});
-
-
-	/*
-		Header Menu Desktop
-	*/
-	
-	if($('#home-card').length) {
-		$('.top-menu').on('click', 'a', function(){
-
-			/* vars */
-			var lines_grid = $('.lines-grid');
-			var id = $(this).attr('href');
-			var card_items = $('.card-inner');
-			var card_item = $(id);
-			var menu_items = $('.top-menu li');
-			var menu_item = $(this).closest('li');
-			
-			if(!menu_item.hasClass('active') & $('#home-card').length) {
-
-				/* close card items */
-				menu_items.removeClass('active');
-				lines_grid.removeClass('loaded');
-
-				/* open card item */
-				menu_item.addClass('active');
-				setTimeout(function() {
-					lines_grid.addClass('loaded');
-					$(card_items).removeClass('active');
-					$(card_item).addClass('active');
-				}, 1000);
-			}
+	$('[data-nav-menu]').on('click', function(event){
 		
+		var $this = $(this),
+			visibleHeadArea = $this.data('nav-menu');
+		
+		$(visibleHeadArea).toggleClass('visible');
+		
+	});
+	
+	
+	var winWidth = $(window).width();
+	dropdownMenu(winWidth);
+	
+	$(window).on('resize', function(){
+		dropdownMenu(winWidth);
+		
+	});
+	
+	// Circular Progress Bar
+	
+	var isAnimated = false;
+	
+	
+})(jQuery);
+
+
+
+function countdownTime(){
+	
+	if(isExists('#clock')){
+		$('#clock').countdown('2018/01/01', function(event){
+			var $this = $(this).html(event.strftime(''
+				+ '<div class="time-sec"><span class="title">%D</span> days </div>'
+				+ '<div class="time-sec"><span class="title">%H</span> hours </div>'
+				+ '<div class="time-sec"><span class="title">%M</span> minutes </div>'
+				+ '<div class="time-sec"><span class="title">%S</span> seconds </div>'));
+		});
+	}
+}
+function dropdownMenu(winWidth){
+	
+	if(winWidth > 767){
+		
+		$('.main-menu li.drop-down').on('mouseover', function(){
+			var $this = $(this),
+				menuAnchor = $this.children('a');
+				
+			menuAnchor.addClass('mouseover');
+			
+		}).on('mouseleave', function(){
+			var $this = $(this),
+				menuAnchor = $this.children('a');
+				
+			menuAnchor.removeClass('mouseover');
+		});
+		
+	}else{
+		
+		$('.main-menu li.drop-down > a').on('click', function(){
+			
+			if($(this).attr('href') == '#') return false;
+			if($(this).hasClass('mouseover')){ $(this).removeClass('mouseover'); }
+			else{ $(this).addClass('mouseover'); }
 			return false;
 		});
 	}
-
-
-	/*
-		Youtube video background
-	*/
 	
-	if($('#video-bg').length) {
-		var myPlayer = $("#video-bg").YTPlayer();
+}
+
+function isExists(elem){
+	if ($(elem).length > 0) { 
+		return true;
 	}
-	
-	
-	/*
-		Initialize masonry items
-	*/
-	
-	var $container = $('.grid-items');
-	
-	$container.imagesLoaded(function() {
-		$container.multipleFilterMasonry({
-			itemSelector: '.grid-item',
-			filtersGroupSelector: '.filter-button-group',
-			percentPosition: true,
-			gutter: 0
-		});
-	});
-	
-
-	/*
-		12. Initialize masonry filter
-	*/
-	
-	$('.filter-button-group').on('change', 'input[type="radio"]', function() {
-		if ($(this).is(':checked')) {
-			$('.f_btn').removeClass('active');
-			$(this).closest('.f_btn').addClass('active');
-		}
-		/* popup image */
-		$('.has-popup-image').magnificPopup({
-			type: 'image',
-			closeOnContentClick: true,
-			mainClass: 'popup-box',
-			image: {
-				verticalFit: true
-			}
-		});
-	
-		/* popup video */
-		$('.has-popup-video').magnificPopup({
-			disableOn: 700,
-			type: 'iframe',
-			removalDelay: 160,
-			preloader: false,
-			fixedContentPos: false,
-			disableOn: 0,
-			mainClass: 'popup-box'
-		});
-	
-		/* popup music */
-		$('.has-popup-music').magnificPopup({
-			disableOn: 700,
-			type: 'iframe',
-			removalDelay: 160,
-			preloader: false,
-			fixedContentPos: false,
-			disableOn: 0,
-			mainClass: 'popup-box'
-		});
-	
-		/* popup media */
-		$('.has-popup-media').magnificPopup({
-			type: 'inline',
-			overflowY: 'auto',
-			closeBtnInside: true,
-			mainClass: 'popup-box-inline'
-		});
-	});
-	
-	
-	/*
-		Popups
-	*/
-	
-	/* popup image */
-	$('.has-popup-image').magnificPopup({
-		type: 'image',
-		closeOnContentClick: true,
-		mainClass: 'popup-box',
-		image: {
-			verticalFit: true
-		}
-	});
-	
-	/* popup video */
-	$('.has-popup-video').magnificPopup({
-		disableOn: 700,
-		type: 'iframe',
-		removalDelay: 160,
-		preloader: false,
-		fixedContentPos: false,
-		disableOn: 0,
-		mainClass: 'popup-box'
-	});
-	
-	/* popup music */
-	$('.has-popup-music').magnificPopup({
-		disableOn: 700,
-		type: 'iframe',
-		removalDelay: 160,
-		preloader: false,
-		fixedContentPos: false,
-		disableOn: 0,
-		mainClass: 'popup-box'
-	});
-	
-	/* popup media */
-	$('.has-popup-media').magnificPopup({
-		type: 'inline',
-		overflowY: 'auto',
-		closeBtnInside: true,
-		mainClass: 'popup-box-inline',
-		callbacks: {
-			open: function() {
-				$('.popup-box-inline .popup-box').slimScroll({
-					height: height+'px'
-				});
-			}
-		}
-	});
-	
-	
-	/*
-		Validate Contact Form
-	*/
-	
-	$("#cform").validate({
-		ignore: ".ignore",
-		rules: {
-			name: {
-				required: true
-			},
-			message: {
-				required: true
-			},
-			email: {
-				required: true,
-				email: true
-			},
-			hiddenRecaptcha: {
-				required: function () {
-					if (grecaptcha.getResponse() == '') {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			}
-		},
-		success: "valid",
-		submitHandler: function() {
-			$.ajax({
-				url: 'mailer/feedback.php',
-				type: 'post',
-				dataType: 'json',
-				data: 'name='+ $("#cform").find('input[name="name"]').val() + '&email='+ $("#cform").find('input[name="email"]').val() + '&message=' + $("#cform").find('textarea[name="message"]').val(),
-				beforeSend: function() {
-				
-				},
-				complete: function() {
-				
-				},
-				success: function(data) {
-					$('#cform').fadeOut();
-					$('.alert-success').delay(1000).fadeIn();
-				}
-			});
-		}
-	});
-	
-	
-	/*
-		Validate Commect Form
-	*/
-	
-	$("#comment_form").validate({
-		rules: {
-			name: {
-				required: true
-			},
-			message: {
-				required: true
-			}
-		},
-		success: "valid",
-		submitHandler: function() {
-		}
-	});
-	
-	
-	/*
-		Google Maps
-	*/
-	
-	if($('#map').length) {
-		initMap();
-	}
-
-
-	/*
-		NEW SCRIPTS
-	*/
-
-	if(($('.blogs-content').height() > $('.blogs-sidebar').height()) && (width > 1023)) {
-		$('.blogs-sidebar').css({'min-height' : $('.blogs-content').height()});
-	}
-	if(($('.blogs-content').height() < $('.blogs-sidebar').height()) && (width > 1023)) {
-		$('.blogs-content').css({'min-height' : $('.blogs-sidebar').height()});
-	}
-
-	$(window).resize(function() {
-		var width = $(window).width();
-		
-		if(($('.blogs-content').height() > $('.blogs-sidebar').height()) && (width > 1023)) {
-			$('.blogs-sidebar').css({'min-height' : $('.blogs-content').height()});
-		}
-		if(($('.blogs-content').height() < $('.blogs-sidebar').height()) && (width > 1023)) {
-			$('.blogs-content').css({'min-height' : $('.blogs-sidebar').height()});
-		}
-	});
-
-	/* Header Menu Inner Page */
-	$('.top-menu').on('click', 'a', function(){
-
-		if(!$('#home-card').length) {
-			location.href = '/' + $(this).attr('href');
-		}
-	
-		return false;
-	});
-
-	var url_hash = location.hash;
-	var sectionElem = $(url_hash);
-	if(url_hash.indexOf('#') == 0 && url_hash.indexOf('-card') != -1 && sectionElem.length){
-		$('.top-menu li').removeClass('active');
-		$('.top-menu a[href="'+url_hash+'"]').parent().addClass('active');
-
-		$('.lines-grid').removeClass('loaded');
-		$('.card-inner').removeClass('active');
-
-		$(url_hash).addClass('active');
-	}
-
-});
-
-
-/*
-	Google Map Options
-*/
+	return false;
+}
 
 function initMap() {
-	var myLatlng = new google.maps.LatLng(-9.922230, -76.238842); // <- Your latitude and longitude
-	var styles = [
+
+	// Create a new StyledMapType object, passing it an array of styles,
+	// and the name to be displayed on the map type control.
+	var styledMapType = new google.maps.StyledMapType(
+	[
 		{
+			"featureType": "administrative",
+			"elementType": "all",
 			"stylers": [
 				{
-					"hue": "#ff1a00"
-				},
+					"saturation": "-100"
+				}
+			]
+		},
+		{
+			"featureType": "administrative.province",
+			"elementType": "all",
+			"stylers": [
 				{
-					"invert_lightness": true
-				},
+					"visibility": "off"
+				}
+			]
+		},
+		{
+			"featureType": "landscape",
+			"elementType": "all",
+			"stylers": [
 				{
 					"saturation": -100
 				},
 				{
-					"lightness": 33
+					"lightness": 65
 				},
 				{
-					"gamma": 0.5
+					"visibility": "on"
+				}
+			]
+		},
+		{
+			"featureType": "poi",
+			"elementType": "all",
+			"stylers": [
+				{
+					"saturation": -100
+				},
+				{
+					"lightness": "50"
+				},
+				{
+					"visibility": "simplified"
+				}
+			]
+		},
+		{
+			"featureType": "road",
+			"elementType": "all",
+			"stylers": [
+				{
+					"saturation": "-100"
+				}
+			]
+		},
+		{
+			"featureType": "road.highway",
+			"elementType": "all",
+			"stylers": [
+				{
+					"visibility": "simplified"
+				}
+			]
+		},
+		{
+			"featureType": "road.arterial",
+			"elementType": "all",
+			"stylers": [
+				{
+					"lightness": "30"
+				}
+			]
+		},
+		{
+			"featureType": "road.local",
+			"elementType": "all",
+			"stylers": [
+				{
+					"lightness": "40"
+				}
+			]
+		},
+		{
+			"featureType": "transit",
+			"elementType": "all",
+			"stylers": [
+				{
+					"saturation": -100
+				},
+				{
+					"visibility": "simplified"
 				}
 			]
 		},
@@ -372,26 +226,47 @@ function initMap() {
 			"elementType": "geometry",
 			"stylers": [
 				{
-					"color": "#2D333C"
+					"hue": "#ffff00"
+				},
+				{
+					"lightness": -25
+				},
+				{
+					"saturation": -97
+				}
+			]
+		},
+		{
+			"featureType": "water",
+			"elementType": "labels",
+			"stylers": [
+				{
+					"lightness": -25
+				},
+				{
+					"saturation": -100
 				}
 			]
 		}
-	]
+	],
+		{name: 'Styled Map'});
 
-	var mapOptions = {
-		zoom: 16,
-		center: myLatlng,
-		mapTypeControl: false,
-		disableDefaultUI: true,
-		zoomControl: true,
-		scrollwheel: false,
-		styles: styles
-	}
-	
-	var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+	// Create a map object, and include the MapTypeId to add
+	// to the map type control.
+
+	var uluru = {lat: 56.946285, lng: 24.105078};
+    var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 4,
+		center: uluru
+    });
+		
+	var image = 'images/google-marker.png';
 	var marker = new google.maps.Marker({
-		position: myLatlng,
+		position: uluru,
 		map: map,
-		title: 'Estamos aquí!'
+		icon: image
 	});
+	//Associate the styled map with the MapTypeId and set it to display.
+	map.mapTypes.set('styled_map', styledMapType);
+	map.setMapTypeId('styled_map');
 }
